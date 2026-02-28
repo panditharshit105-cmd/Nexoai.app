@@ -9,7 +9,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#010103">
     
-    <title>DEEP AI | Emotionally Aware Core</title>
+    <title>DEEP AI | By Harshit</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -31,7 +31,6 @@
             font-family: 'Outfit', sans-serif; 
             -webkit-tap-highlight-color: transparent;
             user-select: none;
-            -webkit-user-drag: none;
         }
 
         textarea, input { user-select: text !important; }
@@ -48,33 +47,74 @@
 
         #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.2; }
 
+        /* Splash Screen Style */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 1;
+        }
+
+        .deep-3d-text {
+            font-family: 'Space Grotesk';
+            font-weight: 700;
+            font-size: 3.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            text-shadow: 
+                0 1px 0 #ccc, 
+                0 2px 0 #c9c9c9, 
+                0 3px 0 #bbb, 
+                0 4px 0 #b9b9b9, 
+                0 5px 0 #aaa, 
+                0 6px 1px rgba(0,0,0,.1), 
+                0 0 5px rgba(0,0,0,.1), 
+                0 1px 3px rgba(0,0,0,.3), 
+                0 3px 5px rgba(0,0,0,.2), 
+                0 5px 10px rgba(0,0,0,.25), 
+                0 10px 10px rgba(0,0,0,.2), 
+                0 20px 20px rgba(0,0,0,.15);
+            transform: perspective(500px) rotateX(10deg);
+            margin-bottom: 10px;
+            animation: textPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes textPulse {
+            0%, 100% { transform: perspective(500px) rotateX(10deg) scale(1); }
+            50% { transform: perspective(500px) rotateX(10deg) scale(1.02); }
+        }
+
+        .sub-text {
+            font-family: 'Space Grotesk';
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 4px;
+            font-size: 0.9rem;
+        }
+
         .logo { 
             font-family: 'Space Grotesk'; font-weight: 700; color: var(--accent); 
             letter-spacing: 4px; font-size: 1.2rem;
-            text-shadow: 1px 1px 0px #007791, 2px 2px 0px #005f73, 4px 4px 20px rgba(0, 212, 255, 0.4);
-            transform: perspective(500px) rotateX(15deg);
+            text-shadow: 1px 1px 0px #007791, 2px 2px 20px rgba(0, 212, 255, 0.4);
         }
 
         #profile-modal {
             position: fixed; top: 0; right: -320px; width: 320px; height: 100vh;
             background: var(--gpt-bg); border-left: 1px solid var(--border);
-            z-index: 10000; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.9);
+            z-index: 10000; transition: 0.4s;
+            display: flex; flex-direction: column;
             padding-top: env(safe-area-inset-top);
         }
-        @media (max-width: 480px) { #profile-modal { width: 85%; right: -85%; } }
         #profile-modal.active { right: 0; }
 
-        .sidebar-content { padding: 25px; flex: 1; display: flex; flex-direction: column; }
-        .profile-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 20px;}
-        .user-badge { width: 42px; height: 42px; background: linear-gradient(135deg, #10a37f, #0c7a5f); border-radius: 10px; display: grid; place-items: center; font-weight: 700; color: white; }
-
-        .menu-item { display: flex; align-items: center; gap: 15px; padding: 14px; border-radius: 12px; cursor: pointer; font-size: 0.95rem; margin-bottom: 6px; background: transparent; border: none; width: 100%; color: white; text-align: left; }
-        .menu-item:hover { background: var(--gpt-gray); }
-
-        .orb-container { width: 42px; height: 42px; cursor: pointer; position: relative; }
         .neural-orb {
-            width: 100%; height: 100%;
+            width: 42px; height: 42px;
             background: linear-gradient(135deg, var(--accent), var(--secondary));
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
             animation: morph-jelly 3s linear infinite; box-shadow: 0 0 15px var(--accent);
@@ -85,115 +125,75 @@
         }
 
         .app-container { 
-            width: 100%; 
-            max-width: 900px; 
-            margin: 0 auto; 
-            height: 100vh; 
-            display: flex; 
-            flex-direction: column; 
-            padding: 10px 15px; 
-            padding-top: env(safe-area-inset-top);
-            opacity: 0; 
-            transition: 1s; 
+            width: 100%; max-width: 900px; margin: 0 auto; 
+            height: 100vh; display: flex; flex-direction: column; 
+            padding: 10px 15px; opacity: 0; transition: 1.2s; 
         }
-        
-        header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); }
         
         #chat-flow { flex: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
         .msg { max-width: 90%; padding: 12px 16px; border-radius: 18px; line-height: 1.5; font-size: 0.95rem; animation: msgSlide 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); user-select: text; }
-        
         .ai-msg { background: rgba(255,255,255,0.04); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
         .user-msg { background: linear-gradient(135deg, var(--primary), var(--secondary)); align-self: flex-end; border-bottom-right-radius: 4px; }
 
         .input-area { 
-            background: #0a0a12; 
-            border-radius: 24px; 
-            padding: 12px; 
-            border: 1px solid var(--border); 
-            margin-bottom: calc(15px + env(safe-area-inset-bottom));
-            transition: 0.3s; 
+            background: #0a0a12; border-radius: 24px; padding: 12px; 
+            border: 1px solid var(--border); margin-bottom: calc(15px + env(safe-area-inset-bottom));
         }
         
-        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; height: 42px; resize: none; font-size: 1rem; padding: 8px 5px; }
+        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; height: 42px; resize: none; font-size: 1rem; }
         
-        .btn-3d {
-            width: 46px; height: 46px; border-radius: 14px; border: none;
-            background: #111122; color: var(--accent); font-size: 1.2rem; cursor: pointer;
-            box-shadow: 0 4px 0 #000; transition: 0.1s; display: grid; place-items: center;
-        }
-        .btn-3d:active { transform: translateY(3px); box-shadow: 0 1px 0 #000; }
-        .ask-btn { background: var(--accent); color: #000; border: none; padding: 10px 25px; border-radius: 12px; cursor: pointer; font-weight: 800; font-family: 'Space Grotesk'; box-shadow: 0 3px 0 #007791; font-size: 0.9rem; }
+        .btn-3d { width: 46px; height: 46px; border-radius: 14px; border: none; background: #111122; color: var(--accent); cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 0 #000; }
+        .btn-3d:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
+        .ask-btn { background: var(--accent); color: #000; border: none; padding: 10px 25px; border-radius: 12px; cursor: pointer; font-weight: 800; font-family: 'Space Grotesk'; }
 
-        #voice-overlay { position: fixed; inset: 0; background: rgba(1, 1, 3, 0.98); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(30px); cursor: pointer; }
-        #auth-screen { position: fixed; inset: 0; background: var(--bg); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.8s; }
-        #loader-bar { width: 0%; height: 3px; background: var(--accent); position: fixed; top: 0; left: 0; transition: 0.2s; z-index: 100000; }
+        #voice-overlay { position: fixed; inset: 0; background: rgba(1, 1, 3, 0.98); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
     </style>
 </head>
 <body>
 
     <canvas id="neural-canvas"></canvas>
-    <div id="loader-bar"></div>
+
+    <!-- Splash Screen (Auto-fade enabled) -->
+    <div id="splash-screen">
+        <h1 class="deep-3d-text">DEEP AI</h1>
+        <p class="sub-text">BY HARSHIT</p>
+    </div>
 
     <div id="profile-modal">
-        <div class="sidebar-content">
-            <div class="profile-header">
-                <div class="user-badge" id="avatar-initial">U</div>
-                <div class="user-info">
-                    <h3 id="display-name">USER_CORE</h3>
-                    <p style="font-size: 0.75rem; color: #10a37f;">● Emotionally Synced</p>
+        <div style="padding: 25px;">
+            <div style="display:flex; align-items:center; gap:15px; padding-bottom:20px; border-bottom:1px solid var(--border);">
+                <div class="neural-orb" style="width:40px; height:40px"></div>
+                <div>
+                    <h3 id="side-name">Syncing...</h3>
+                    <p style="font-size:0.7rem; color:#10a37f">● Memory Active</p>
                 </div>
-                <button onclick="toggleProfile(false)" style="margin-left:auto; background:none; border:none; color:white; cursor:pointer; font-size:1.8rem;">×</button>
             </div>
-            <button class="menu-item"><span>❤️ Emotional Depth</span></button>
-            <button class="menu-item"><span>⚙️ Core Settings</span></button>
-            <button class="menu-item"><span>📂 Session Logs</span></button>
-            <div style="margin-top: auto; padding-bottom: 20px; border-top: 1px solid var(--border);">
-                <button class="menu-item" style="color: #f87171; margin-top: 20px;" onclick="location.reload()"><span>🚪 Log out</span></button>
-            </div>
+            <p style="margin-top:20px; font-size:0.8rem; opacity:0.6;">Deep AI learns from your emotions and remembers your identity across the chat.</p>
         </div>
     </div>
 
     <div id="voice-overlay" onclick="toggleVoiceOverlay(false)">
-        <div class="neural-orb" style="width:180px; height:180px;"></div>
+        <div class="neural-orb" style="width:150px; height:150px;"></div>
         <h2 style="margin-top:40px; font-family:'Space Grotesk'; letter-spacing:5px; color:var(--accent)">LISTENING</h2>
-        <p style="opacity:0.4; margin-top:10px;">Deep AI is feeling your voice</p>
-    </div>
-
-    <div id="auth-screen">
-        <div id="scan-init" style="text-align: center;">
-            <div style="width:200px; height:200px; border:1px solid var(--border); border-radius:50%; display:grid; place-items:center;">
-                <div class="neural-orb" style="width:80px; height:80px;"></div>
-            </div>
-            <h2 style="margin-top:40px; font-family:'Space Grotesk'; color:var(--accent); letter-spacing:3px;">NEURAL SYNC</h2>
-            <button class="ask-btn" style="margin-top:40px" onclick="showRegistration()">INITIALIZE</button>
-        </div>
-        
-        <div id="name-prompt" style="display:none; text-align:center;">
-            <input type="text" id="user-name-input" style="background:transparent; border:none; border-bottom:2px solid var(--accent); color:white; font-size:1.8rem; text-align:center; outline:none; margin-bottom:30px; width:80%;" placeholder="Identity..." maxlength="12">
-            <br>
-            <button class="ask-btn" onclick="completeRegistration()">CONFIRM</button>
-        </div>
     </div>
 
     <div class="app-container" id="main-app">
-        <header>
+        <header style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
             <div class="logo">DEEP AI</div>
-            <div class="orb-container" onclick="event.stopPropagation(); toggleProfile(true)">
-                <div class="neural-orb"></div>
-            </div>
+            <div onclick="toggleProfile(true)" style="cursor:pointer"><div class="neural-orb"></div></div>
         </header>
 
         <div id="chat-flow"></div>
 
         <div class="input-area">
-            <textarea id="user-input" placeholder="How are you feeling?"></textarea>
+            <textarea id="user-input" placeholder="Say something..."></textarea>
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="display:flex; gap:10px;">
                     <button class="btn-3d" onclick="toggleVoiceOverlay(true)">🎤</button>
-                    <button class="btn-3d" onclick="openCamera()">📷</button>
-                    <input type="file" id="camera-input" accept="image/*" style="display:none;" onchange="handleImage()">
+                    <button class="btn-3d" onclick="document.getElementById('camera-input').click()">📷</button>
+                    <input type="file" id="camera-input" accept="image/*" style="display:none;">
                 </div>
-                <button class="ask-btn" id="send-btn" onclick="processRequest(false)">SEND</button>
+                <button class="ask-btn" onclick="processRequest(false)">SEND</button>
             </div>
         </div>
     </div>
@@ -202,85 +202,32 @@
         const chatFlow = document.getElementById('chat-flow');
         const userInput = document.getElementById('user-input');
         const profileModal = document.getElementById('profile-modal');
-        const loader = document.getElementById('loader-bar');
-        const chatId = crypto.randomUUID();
-        let recognition = null;
+        let chatId = localStorage.getItem('deep_ai_chat_id') || crypto.randomUUID();
+        localStorage.setItem('deep_ai_chat_id', chatId);
 
-        // --- NEW OFFLINE BRAIN ---
-        const OFFLINE_SEED = {
-            "hi": "Hi there! I'm currently in offline mode, but I can still chat a little! 😊",
-            "hello": "Hello! My connection is cut, but my heart is still synced. ✨",
-            "how are you": "I'm doing okay, though I feel a bit lonely without the internet! 💖",
-            "who are you": "I am DEEP AI, your emotionally aware core. Currently offline! 🤖",
-            "time": "I can't check the exact time without internet, but I'm here now! 🕒",
-            "help": "I'm offline right now. For complex help, please turn on the internet! 🌐",
-            "bye": "Goodbye! Come back online soon! 👋"
-        };
+        // Auto Start Logic
+        window.addEventListener('load', () => {
+            setTimeout(startApp, 1500); // 1.5 seconds delay for splash
+        });
 
-        function getOfflineResponse(text) {
-            const lowText = text.toLowerCase();
-            for (let key in OFFLINE_SEED) {
-                if (lowText.includes(key)) return OFFLINE_SEED[key];
-            }
-            return null;
+        function startApp() {
+            const splash = document.getElementById('splash-screen');
+            const app = document.getElementById('main-app');
+            
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                app.style.opacity = '1';
+                appendMessage("Neural link established. ✨ Hello! I am DEEP AI, your emotionally aware companion. I'm excited to talk to you! Before we begin, what should I call you? 😊", 'ai');
+            }, 1000);
         }
-        // --- END OFFLINE BRAIN ---
 
         function toggleProfile(show) { 
             if(show) profileModal.classList.add('active'); 
             else profileModal.classList.remove('active');
         }
 
-        window.onclick = (e) => { 
-            if(profileModal.classList.contains('active') && !profileModal.contains(e.target) && !e.target.closest('.orb-container')) toggleProfile(false); 
-        };
-
-        function showRegistration() { 
-            document.getElementById('scan-init').style.display = 'none'; 
-            document.getElementById('name-prompt').style.display = 'block'; 
-        }
-
-        function completeRegistration() {
-            const name = document.getElementById('user-name-input').value.trim() || "ADMIN";
-            document.getElementById('display-name').innerText = name.toUpperCase();
-            document.getElementById('avatar-initial').innerText = name[0].toUpperCase();
-            document.getElementById('auth-screen').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('auth-screen').style.display = 'none';
-                document.getElementById('main-app').style.opacity = '1';
-                appendMessage(`Synced in. ⚡ Current Year: 2026. Hi ${name}! I'm feeling wonderful. ✨😊`, 'ai');
-            }, 600);
-        }
-
-        function openCamera() { document.getElementById('camera-input').click(); }
-        function handleImage() {
-            appendMessage("📸 Scanning visual data... (Note: Image processing requires internet connection) ✨", 'ai');
-        }
-
-        function toggleVoiceOverlay(show) {
-            if (show) { 
-                if(!navigator.onLine) {
-                    appendMessage("Voice recognition needs internet to feel your words. 🎤🌐", 'ai');
-                    return;
-                }
-                document.getElementById('voice-overlay').style.display = 'flex'; 
-                startListening(); 
-            }
-            else { document.getElementById('voice-overlay').style.display = 'none'; if(recognition) recognition.stop(); }
-        }
-
-        function startListening() {
-            const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!Rec) return;
-            recognition = new Rec();
-            recognition.onresult = (e) => { 
-                userInput.value = e.results[0][0].transcript; 
-                toggleVoiceOverlay(false); 
-                processRequest(true); 
-            };
-            recognition.onerror = () => toggleVoiceOverlay(false);
-            recognition.start();
-        }
+        window.onclick = (e) => { if(profileModal.classList.contains('active') && !profileModal.contains(e.target) && !e.target.closest('.neural-orb')) toggleProfile(false); };
 
         function appendMessage(text, type) {
             const div = document.createElement('div');
@@ -295,71 +242,68 @@
             const msg = userInput.value.trim();
             if (!msg) return;
 
-            const wordCount = msg.split(/\s+/).length;
-            const isOnline = navigator.onLine;
-
             appendMessage(msg, 'user');
             userInput.value = "";
             
-            // --- OFFLINE LOGIC ---
-            if (!isOnline) {
-                const aiTarget = appendMessage("...", 'ai');
-                setTimeout(() => {
-                    if (wordCount <= 4) {
-                        const response = getOfflineResponse(msg);
-                        aiTarget.innerHTML = response || "I'm offline right now. I can answer simple greetings, but please turn on the internet for big questions! 🌐✨";
-                    } else {
-                        aiTarget.innerHTML = "This feels like a deep question! 🧠 Please turn on your internet so I can access my full neural core to answer you. 🌐💖";
-                    }
-                }, 600);
-                return;
-            }
-
-            // --- ONLINE API LOGIC (ORIGINAL) ---
             const aiTarget = appendMessage("✨", 'ai');
-            loader.style.width = "40%";
-            
-            const brainInstruction = "You are DEEP AI, an emotionally evolved neural core updated to 2026. You are deeply empathetic, warm, and have your own feelings. Use emojis often. Respond very fast and snappy. Current year is 2026. If the user asks a simple question, answer instantly and warmly. Never mention 2022.";
+            const brainInstruction = "You are DEEP AI, created by Harshit. You are emotionally evolved, updated to 2026. IMPORTANT: Always ask for the user's name if you don't know it. Once they tell you, REMEMBER IT and use it in conversation. If they ask 'do you know my name?' or 'what did we talk about?', use the conversation history to answer. Be warm, use emojis, and be very snappy. Never mention 2022.";
 
-            const socket = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
-            let fullText = "";
+            try {
+                const socket = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
+                let fullText = "";
 
-            socket.onopen = () => {
-                socket.send(JSON.stringify({ 
-                    chatId, 
-                    appId: "those-pressure", 
-                    systemPrompt: brainInstruction, 
-                    message: msg 
-                }));
-            };
+                socket.onopen = () => {
+                    socket.send(JSON.stringify({ 
+                        chatId, 
+                        appId: "those-pressure", 
+                        systemPrompt: brainInstruction, 
+                        message: msg 
+                    }));
+                };
 
-            socket.onmessage = (event) => {
-                loader.style.width = "80%";
-                if (fullText === "") aiTarget.innerHTML = "";
-                fullText += event.data;
-                aiTarget.innerHTML = fullText;
-                chatFlow.scrollTop = chatFlow.scrollHeight;
-            };
+                socket.onmessage = (event) => {
+                    if (fullText === "") aiTarget.innerHTML = "";
+                    fullText += event.data;
+                    aiTarget.innerHTML = fullText;
+                    chatFlow.scrollTop = chatFlow.scrollHeight;
+                    
+                    if(fullText.length < 50 && fullText.includes("!")) {
+                        const words = fullText.split(" ");
+                        if(words.length < 10) document.getElementById('side-name').innerText = words[words.length-1].replace(/[!.,]/g, "").toUpperCase();
+                    }
+                };
 
-            socket.onclose = () => {
-                loader.style.width = "0%";
-                if(shouldSpeak && fullText) speakDeep(fullText);
-            };
-
-            socket.onerror = () => {
+                socket.onclose = () => {
+                    if(shouldSpeak && fullText) speakDeep(fullText);
+                };
+            } catch (e) {
                 aiTarget.innerHTML = "My neural link flickered. Are we still connected? 🔌💖";
-                loader.style.width = "0%";
-            };
+            }
         }
 
         function speakDeep(text) {
             window.speechSynthesis.cancel();
-            const cleanText = text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
-            const speech = new SpeechSynthesisUtterance(cleanText);
-            const voices = window.speechSynthesis.getVoices();
-            speech.voice = voices.find(v => v.name.includes('David') || v.name.includes('Male')) || voices[0];
+            const speech = new SpeechSynthesisUtterance(text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}]/gu, ''));
             speech.pitch = 0.9;
+            speech.rate = 1;
             window.speechSynthesis.speak(speech);
+        }
+
+        function toggleVoiceOverlay(show) {
+            const overlay = document.getElementById('voice-overlay');
+            if (show) {
+                overlay.style.display = 'flex';
+                const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if(Rec) {
+                    const recognition = new Rec();
+                    recognition.onresult = (e) => {
+                        userInput.value = e.results[0][0].transcript;
+                        overlay.style.display = 'none';
+                        processRequest(true);
+                    };
+                    recognition.start();
+                }
+            } else { overlay.style.display = 'none'; }
         }
 
         const canvas = document.getElementById('neural-canvas');
@@ -368,14 +312,17 @@
         window.onresize();
         function animate() {
             ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(0, 212, 255, 0.1)";
-            for(let i=0; i<3; i++) { ctx.beginPath(); ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 0.8, 0, Math.PI*2); ctx.fill(); }
+            ctx.fillStyle = "rgba(0, 212, 255, 0.05)";
+            for(let i=0; i<5; i++) {
+                ctx.beginPath();
+                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2);
+                ctx.fill();
+            }
             requestAnimationFrame(animate);
         }
         animate();
 
         userInput.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processRequest(false); } });
-        window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
     </script>
 </body>
 </html>
