@@ -3,326 +3,1373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#010103">
-    
-    <title>DEEP AI | By Harshit</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>NEXUS OS - Futuristic AI Super App</title>
+    <!-- Tailwind CSS for functional utility utilities -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons for high-tech interface iconography -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: Orbitron for Sci-Fi elements, Inter for clean readable content -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Orbitron:wght@500;700;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg: #010103;
-            --primary: #4f46e5; 
-            --secondary: #7c3aed; 
-            --accent: #00d4ff;
-            --gpt-bg: #0d0d0d;
-            --gpt-gray: #171717;
-            --text: #ececec;
-            --border: rgba(255, 255, 255, 0.08);
+            --neon-cyan: #00f3ff;
+            --neon-purple: #b000ff;
+            --neon-pink: #ff007f;
+            --bg-dark: #030712;
+            --glass-bg: rgba(10, 15, 30, 0.7);
+            --glass-border: rgba(0, 243, 255, 0.2);
+            --font-cyber: 'Orbitron', sans-serif;
+            --font-sans: 'Inter', sans-serif;
+            --font-code: 'Fira Code', monospace;
         }
 
-        * { 
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box; 
-            font-family: 'Outfit', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-dark);
+            color: #f3f4f6;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
 
-        textarea, input { user-select: text !important; }
+        .font-cyber { font-family: var(--font-cyber); }
+        .font-code { font-family: var(--font-code); }
 
-        body { 
-            background: var(--bg); 
-            color: var(--text); 
-            height: 100vh; 
-            overflow: hidden; 
-            position: fixed; 
-            width: 100%;
-            overscroll-behavior-y: contain;
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 2px; }
+
+        /* Glassmorphism Classes */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
-        #neural-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.2; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-        /* Splash Screen Style */
-        #splash-screen {
+        .glass-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+            background: rgba(0, 243, 255, 0.02);
+            transform: translateY(-2px);
+        }
+
+        /* Holographic & Glow Effects */
+        .neon-text-cyan { text-shadow: 0 0 8px var(--neon-cyan); color: var(--neon-cyan); }
+        .neon-text-purple { text-shadow: 0 0 8px var(--neon-purple); color: var(--neon-purple); }
+        .neon-border-cyan:focus { border-color: var(--neon-cyan); box-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
+        
+        .neon-glow-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        .neon-glow-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        .neon-glow-btn:hover::after { left: 100%; }
+
+        /* Particle System Base Container */
+        #particle-canvas {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+        }
+
+        /* App Layout States */
+        .app-view {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+        .app-view.active { display: flex; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.98); filter: blur(4px); }
+            to { opacity: 1; transform: scale(1); filter: blur(0); }
+        }
+
+        /* Boot Sequence Overlay */
+        #boot-screen {
             position: fixed;
             inset: 0;
-            background: var(--bg);
-            z-index: 99999;
+            background: #02040a;
+            z-index: 9999;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
-            opacity: 1;
+            align-items: center;
+            font-family: var(--font-cyber);
         }
 
-        .deep-3d-text {
-            font-family: 'Space Grotesk';
-            font-weight: 700;
-            font-size: 3.5rem;
-            color: var(--accent);
-            text-transform: uppercase;
-            letter-spacing: 8px;
-            text-shadow: 
-                0 1px 0 #ccc, 
-                0 2px 0 #c9c9c9, 
-                0 3px 0 #bbb, 
-                0 4px 0 #b9b9b9, 
-                0 5px 0 #aaa, 
-                0 6px 1px rgba(0,0,0,.1), 
-                0 0 5px rgba(0,0,0,.1), 
-                0 1px 3px rgba(0,0,0,.3), 
-                0 3px 5px rgba(0,0,0,.2), 
-                0 5px 10px rgba(0,0,0,.25), 
-                0 10px 10px rgba(0,0,0,.2), 
-                0 20px 20px rgba(0,0,0,.15);
-            transform: perspective(500px) rotateX(10deg);
-            margin-bottom: 10px;
-            animation: textPulse 2s ease-in-out infinite;
+        /* Waveform Animation */
+        .bar {
+            width: 4px;
+            height: 100%;
+            background: var(--neon-cyan);
+            border-radius: 2px;
+            animation: bounce 1s ease-in-out infinite alternate;
+        }
+        @keyframes bounce {
+            0% { height: 10%; }
+            100% { height: 100%; }
         }
 
-        @keyframes textPulse {
-            0%, 100% { transform: perspective(500px) rotateX(10deg) scale(1); }
-            50% { transform: perspective(500px) rotateX(10deg) scale(1.02); }
+        /* Floating Bubble UI */
+        #nexus-bubble {
+            box-shadow: 0 0 20px var(--neon-cyan);
+            animation: float 4s ease-in-out infinite;
+            z-index: 2000;
         }
-
-        .sub-text {
-            font-family: 'Space Grotesk';
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 4px;
-            font-size: 0.9rem;
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
         }
-
-        .logo { 
-            font-family: 'Space Grotesk'; font-weight: 700; color: var(--accent); 
-            letter-spacing: 4px; font-size: 1.2rem;
-            text-shadow: 1px 1px 0px #007791, 2px 2px 20px rgba(0, 212, 255, 0.4);
-        }
-
-        #profile-modal {
-            position: fixed; top: 0; right: -320px; width: 320px; height: 100vh;
-            background: var(--gpt-bg); border-left: 1px solid var(--border);
-            z-index: 10000; transition: 0.4s;
-            display: flex; flex-direction: column;
-            padding-top: env(safe-area-inset-top);
-        }
-        #profile-modal.active { right: 0; }
-
-        .neural-orb {
-            width: 42px; height: 42px;
-            background: linear-gradient(135deg, var(--accent), var(--secondary));
-            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-            animation: morph-jelly 3s linear infinite; box-shadow: 0 0 15px var(--accent);
-        }
-        @keyframes morph-jelly {
-            0%, 100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-            50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-        }
-
-        .app-container { 
-            width: 100%; max-width: 900px; margin: 0 auto; 
-            height: 100vh; display: flex; flex-direction: column; 
-            padding: 10px 15px; opacity: 0; transition: 1.2s; 
-        }
-        
-        #chat-flow { flex: 1; overflow-y: auto; padding: 20px 0; display: flex; flex-direction: column; gap: 15px; scrollbar-width: none; }
-        .msg { max-width: 90%; padding: 12px 16px; border-radius: 18px; line-height: 1.5; font-size: 0.95rem; animation: msgSlide 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); user-select: text; }
-        .ai-msg { background: rgba(255,255,255,0.04); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .user-msg { background: linear-gradient(135deg, var(--primary), var(--secondary)); align-self: flex-end; border-bottom-right-radius: 4px; }
-
-        .input-area { 
-            background: #0a0a12; border-radius: 24px; padding: 12px; 
-            border: 1px solid var(--border); margin-bottom: calc(15px + env(safe-area-inset-bottom));
-        }
-        
-        textarea { width: 100%; background: transparent; border: none; outline: none; color: white; height: 42px; resize: none; font-size: 1rem; }
-        
-        .btn-3d { width: 46px; height: 46px; border-radius: 14px; border: none; background: #111122; color: var(--accent); cursor: pointer; display: grid; place-items: center; box-shadow: 0 4px 0 #000; }
-        .btn-3d:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
-        .ask-btn { background: var(--accent); color: #000; border: none; padding: 10px 25px; border-radius: 12px; cursor: pointer; font-weight: 800; font-family: 'Space Grotesk'; }
-
-        #voice-overlay { position: fixed; inset: 0; background: rgba(1, 1, 3, 0.98); z-index: 20000; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(30px); }
     </style>
 </head>
-<body>
+<body class="bg-gray-950 text-gray-100 overflow-hidden select-none">
 
-    <canvas id="neural-canvas"></canvas>
+    <!-- CANVAS BACKGROUND LAYER -->
+    <canvas id="particle-canvas"></canvas>
 
-    <!-- Splash Screen (Auto-fade enabled) -->
-    <div id="splash-screen">
-        <h1 class="deep-3d-text">DEEP AI</h1>
-        <p class="sub-text">BY HARSHIT</p>
-    </div>
-
-    <div id="profile-modal">
-        <div style="padding: 25px;">
-            <div style="display:flex; align-items:center; gap:15px; padding-bottom:20px; border-bottom:1px solid var(--border);">
-                <div class="neural-orb" style="width:40px; height:40px"></div>
-                <div>
-                    <h3 id="side-name">Syncing...</h3>
-                    <p style="font-size:0.7rem; color:#10a37f">● Memory Active</p>
+    <!-- BOOT SYSTEM OVERLAY -->
+    <div id="boot-screen">
+        <div class="text-center space-y-6 max-w-md px-6">
+            <div class="relative inline-block">
+                <div class="w-24 h-24 rounded-full border-2 border-cyan-400 flex items-center justify-center animate-spin" style="animation-duration: 3s;"></div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <i data-lucide="cpu" class="w-10 h-10 text-cyan-400 animate-pulse"></i>
                 </div>
             </div>
-            <p style="margin-top:20px; font-size:0.8rem; opacity:0.6;">Deep AI learns from your emotions and remembers your identity across the chat.</p>
+            <h1 class="text-3xl font-black tracking-widest text-cyan-400 font-cyber">NEXUS // OS</h1>
+            <div class="w-64 h-1 bg-gray-800 rounded-full overflow-hidden relative">
+                <div id="boot-progress" class="absolute left-0 top-0 h-full bg-gradient-to-r from-cyan-400 to-purple-600 w-0 transition-all duration-300"></div>
+            </div>
+            <p id="boot-status" class="text-xs font-code text-cyan-500/70 tracking-tight text-left h-6 overflow-hidden"></p>
         </div>
     </div>
 
-    <div id="voice-overlay" onclick="toggleVoiceOverlay(false)">
-        <div class="neural-orb" style="width:150px; height:150px;"></div>
-        <h2 style="margin-top:40px; font-family:'Space Grotesk'; letter-spacing:5px; color:var(--accent)">LISTENING</h2>
-    </div>
+    <!-- MAIN OS WRAPPER -->
+    <div class="relative w-full h-full flex flex-col z-10 p-2 md:p-4 gap-4 box-border">
+        
+        <!-- HEADER / COMMAND METRICS PANEL -->
+        <header class="w-full glass-panel px-6 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-ping absolute"></div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500 relative"></div>
+                <div>
+                    <h2 class="font-cyber font-bold text-lg tracking-wider text-cyan-400">NEXUS.CORE</h2>
+                    <p class="text-[10px] font-code text-gray-400">SYS_STATUS: OPTIMAL // ENGINES: READY</p>
+                </div>
+            </div>
+            
+            <!-- Global Omni-Search Command Input -->
+            <div class="hidden md:flex items-center bg-black/40 border border-cyan-500/20 rounded-full px-4 py-1.5 w-96 gap-2">
+                <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+                <input type="text" id="omni-command" placeholder="Type core directive or query..." class="bg-transparent text-sm w-full focus:outline-none text-cyan-100 placeholder-cyan-700 font-code">
+                <span class="text-[9px] bg-cyan-950 border border-cyan-500/40 px-1.5 py-0.5 rounded text-cyan-400 font-cyber">⌘K</span>
+            </div>
 
-    <div class="app-container" id="main-app">
-        <header style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
-            <div class="logo">DEEP AI</div>
-            <div onclick="toggleProfile(true)" style="cursor:pointer"><div class="neural-orb"></div></div>
+            <div class="flex items-center gap-4">
+                <!-- Engine/Model Status Indicators -->
+                <div class="hidden lg:flex items-center gap-3 border-r border-gray-800 pr-4">
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 font-code">MEM_SYNC</p>
+                        <p id="header-memory-count" class="text-xs font-cyber text-purple-400">0 CORE NODES</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-400 font-code">API_POOL</p>
+                        <p id="header-api-status" class="text-xs font-cyber text-cyan-400">HYBRID MOCK</p>
+                    </div>
+                </div>
+                <!-- Mini Clock Component -->
+                <div class="text-right font-cyber">
+                    <p id="system-time" class="text-sm font-bold tracking-widest text-gray-200">00:00:00</p>
+                    <p id="system-date" class="text-[9px] text-cyan-500/60 tracking-wider">00.00.2026</p>
+                </div>
+            </div>
         </header>
 
-        <div id="chat-flow"></div>
+        <!-- PRIMARY APP VIEWPORTS CONTAINER -->
+        <main class="flex-1 w-full overflow-hidden relative min-h-0">
+            
+            <!-- VIEW 1: COGNITIVE INTELLIGENCE HUBCENTER (ADVANCED CHAT) -->
+            <section id="view-chat" class="app-view active w-full h-full flex flex-col md:flex-row gap-4">
+                <!-- Sidebar Control Suite -->
+                <div class="w-full md:w-80 glass-panel p-4 flex flex-col gap-4">
+                    <button onclick="chatEngine.createNewSession()" class="w-full bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-400 p-3 rounded-xl flex items-center justify-between text-sm transition-all neon-glow-btn font-cyber text-cyan-400 font-semibold">
+                        <span>INITIATE NEW CORE</span>
+                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    </button>
+                    
+                    <div class="flex-1 overflow-y-auto space-y-2 pr-1" id="chat-session-list">
+                        <!-- Dynamic Sessions Injection Architecture -->
+                    </div>
 
-        <div class="input-area">
-            <textarea id="user-input" placeholder="Say something..."></textarea>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="display:flex; gap:10px;">
-                    <button class="btn-3d" onclick="toggleVoiceOverlay(true)">🎤</button>
-                    <button class="btn-3d" onclick="document.getElementById('camera-input').click()">📷</button>
-                    <input type="file" id="camera-input" accept="image/*" style="display:none;">
+                    <div class="border-t border-cyan-500/10 pt-4 space-y-2">
+                        <label class="text-[10px] font-cyber text-cyan-500/60 tracking-wider block">NEURAL CORE SELECTION</label>
+                        <select id="model-selector" class="w-full bg-black/60 border border-cyan-500/20 rounded-xl p-2.5 text-xs text-cyan-300 focus:outline-none focus:border-cyan-400 font-code">
+                            <option value="nexus-ultra">Nexus Intelligence v4.0 (Autonomous)</option>
+                            <option value="gemini-free">Gemini Flash API (Hybrid Live)</option>
+                            <option value="groq-llama">Llama 3 70B Engine (High Speed)</option>
+                            <option value="deepseek-r1">DeepSeek Reasoner (Deep Chain)</option>
+                        </select>
+                    </div>
                 </div>
-                <button class="ask-btn" onclick="processRequest(false)">SEND</button>
-            </div>
-        </div>
+
+                <!-- Chat Canvas / Workspace Workspace Split Screen Configuration Available -->
+                <div class="flex-1 glass-panel flex flex-col overflow-hidden relative">
+                    <!-- Thread Header Indicators -->
+                    <div class="p-4 border-b border-cyan-500/10 flex items-center justify-between bg-black/20">
+                        <div class="flex items-center gap-3">
+                            <i data-lucide="message-square" class="w-5 h-5 text-cyan-400"></i>
+                            <div>
+                                <h3 id="current-session-title" class="text-sm font-semibold text-gray-200">Active Quantum Thread</h3>
+                                <p class="text-[10px] text-cyan-500/50 font-code">THREAD_ID: <span id="current-session-id">N/A</span></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button onclick="chatEngine.toggleSplitScreen()" class="p-2 rounded-lg hover:bg-white/5 border border-transparent hover:border-gray-800 text-gray-400 hover:text-cyan-400 transition-all" title="Toggle Reasoner Sandbox Split">
+                                <i data-lucide="columns-2" class="w-4 h-4"></i>
+                            </button>
+                            <button onclick="chatEngine.clearCurrentSession()" class="p-2 rounded-lg hover:bg-white/5 border border-transparent hover:border-gray-800 text-gray-400 hover:text-rose-400 transition-all" title="Wipe History Frame">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Split Interface Architecture Wrapper -->
+                    <div class="flex-1 flex overflow-hidden min-h-0">
+                        <!-- Left Panel: Conversation Execution Track -->
+                        <div class="flex-1 flex flex-col h-full overflow-y-auto p-4 space-y-4" id="chat-messages-container">
+                            <!-- Dynamic Message Bubbles Generated by System Core -->
+                        </div>
+
+                        <!-- Right Panel: Hidden by Default, Real-time Autonomous Execution Sandbox/Thinking Chain Trace -->
+                        <div id="split-reasoner-panel" class="w-0 border-l border-cyan-500/10 bg-black/30 h-full flex flex-col overflow-hidden transition-all duration-300">
+                            <div class="p-3 border-b border-cyan-500/10 flex items-center gap-2 bg-black/40">
+                                <i data-lucide="activity" class="w-3.5 h-3.5 text-purple-400 animate-pulse"></i>
+                                <span class="text-xs font-cyber tracking-wider text-purple-400">COGNITIVE PROCESSOR & SANDBOX</span>
+                            </div>
+                            <div class="flex-1 p-4 overflow-y-auto font-code text-xs text-purple-300/90 space-y-3" id="reasoning-trace-container">
+                                <div class="text-gray-500">// System idling. Awaiting analytical telemetry data request.</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input System Bay Area -->
+                    <div class="p-4 border-t border-cyan-500/10 bg-black/30">
+                        <div class="flex items-center gap-3 bg-black/60 border border-cyan-500/20 focus-within:border-cyan-400 rounded-2xl p-2 transition-all">
+                            <!-- Input Utility Buttons -->
+                            <button id="voice-input-btn" onclick="voiceEngine.toggleRecognition()" class="p-3 bg-cyan-950/40 border border-cyan-500/20 hover:border-cyan-400 text-cyan-400 rounded-xl transition-all" title="Activate Audio Speech Link">
+                                <i data-lucide="mic" class="w-4 h-4"></i>
+                            </button>
+                            
+                            <textarea id="chat-input" rows="1" placeholder="Issue execution directive, command or complex query..." class="bg-transparent text-sm flex-1 focus:outline-none resize-none py-2 text-gray-100 placeholder-gray-600 block min-w-0" onkeydown="chatEngine.handleInputKeydown(event)"></textarea>
+                            
+                            <button onclick="chatEngine.submitInput()" class="p-3 bg-gradient-to-br from-cyan-500 to-purple-600 hover:brightness-110 text-white rounded-xl transition-all flex items-center justify-center shadow-lg shadow-cyan-500/10">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="flex justify-between items-center px-2 mt-2">
+                            <span class="text-[10px] text-gray-500 font-code">Network Status: Connected to local hyper-mesh network.</span>
+                            <span id="typing-indicator-text" class="text-[10px] text-cyan-400/70 font-cyber hidden">NEXUS SYSTEM THINKING...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 2: AUTONOMOUS AGENT ORCHESTRATION LAYER -->
+            <section id="view-agents" class="app-view w-full h-full flex flex-col gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                    <!-- Agent Card Template Instance -->
+                    <div class="glass-panel p-5 flex flex-col justify-between gap-4 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-cyan-500/5 rounded-full blur-xl -mr-6 -mt-6"></div>
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-cyan-950/60 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+                                <i data-lucide="search-code"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-cyber font-bold tracking-wide text-sm text-gray-200">RESEARCH MATRIX ENGINE</h4>
+                                <p class="text-xs text-gray-400 mt-1">Deep autonomous scanning across intelligence nets, cross-referencing information pools.</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-cyan-500/10 pt-3 flex items-center justify-between mt-2">
+                            <span class="text-[10px] font-code bg-cyan-950 px-2 py-0.5 rounded border border-cyan-500/30 text-cyan-400">STATUS: READY</span>
+                            <button onclick="agentEngine.spawn('Research Engine')" class="text-xs font-cyber text-cyan-400 hover:underline flex items-center gap-1">DEPLOY <i data-lucide="arrow-up-right" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 flex flex-col justify-between gap-4 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-purple-500/5 rounded-full blur-xl -mr-6 -mt-6"></div>
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                                <i data-lucide="terminal"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-cyber font-bold tracking-wide text-sm text-gray-200">CODE ARCHITECT DEPLOYMENT</h4>
+                                <p class="text-xs text-gray-400 mt-1">Autonomous programmatic agent writing clean scripts, running compiler loops, debugging codebases.</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-cyan-500/10 pt-3 flex items-center justify-between mt-2">
+                            <span class="text-[10px] font-code bg-purple-950 px-2 py-0.5 rounded border border-purple-500/30 text-purple-400">STATUS: READY</span>
+                            <button onclick="agentEngine.spawn('Code Architect')" class="text-xs font-cyber text-purple-400 hover:underline flex items-center gap-1">DEPLOY <i data-lucide="arrow-up-right" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 flex flex-col justify-between gap-4 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-xl -mr-6 -mt-6"></div>
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-amber-950/60 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                                <i data-lucide="briefcase"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-cyber font-bold tracking-wide text-sm text-gray-200">STRATEGY AND ANALYTICS OPERATOR</h4>
+                                <p class="text-xs text-gray-400 mt-1">Synthesizes competitive profiles, documents marketing vectors, compiles financial outlines.</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-cyan-500/10 pt-3 flex items-center justify-between mt-2">
+                            <span class="text-[10px] font-code bg-amber-950 px-2 py-0.5 rounded border border-amber-500/30 text-amber-400">STATUS: READY</span>
+                            <button onclick="agentEngine.spawn('Strategy Operator')" class="text-xs font-cyber text-amber-400 hover:underline flex items-center gap-1">DEPLOY <i data-lucide="arrow-up-right" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 flex flex-col justify-between gap-4 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-full blur-xl -mr-6 -mt-6"></div>
+                        <div class="space-y-3">
+                            <div class="w-10 h-10 rounded-xl bg-rose-950/60 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                                <i data-lucide="workflow"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-cyber font-bold tracking-wide text-sm text-gray-200">AUTOMATED WORKFLOW MATRIX</h4>
+                                <p class="text-xs text-gray-400 mt-1">Assembles chaining matrices across disparate logic endpoints to process multi-stage automation tasks.</p>
+                            </div>
+                        </div>
+                        <div class="border-t border-cyan-500/10 pt-3 flex items-center justify-between mt-2">
+                            <span class="text-[10px] font-code bg-rose-950 px-2 py-0.5 rounded border border-rose-500/30 text-rose-400">STATUS: DEPLOYED</span>
+                            <button onclick="agentEngine.spawn('Workflow Matrix')" class="text-xs font-cyber text-rose-400 hover:underline flex items-center gap-1">MONITOR <i data-lucide="arrow-up-right" class="w-3 h-3"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Task Execution Monitoring Sandbox Display Grid -->
+                <div class="flex-1 glass-panel p-4 flex flex-col overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-cyan-500/10 pb-3 mb-3">
+                        <h3 class="font-cyber font-bold tracking-wider text-sm text-cyan-400 flex items-center gap-2">
+                            <i data-lucide="activity" class="w-4 h-4 animate-pulse"></i> LIVE AGENT ACTIVITY SCHEDULER LOGS
+                        </h3>
+                        <span id="active-agent-counter" class="text-xs font-code text-purple-400">1 ACTIVE AGENT THREAD RUNNING</span>
+                    </div>
+                    <div id="agent-runtime-monitor" class="flex-1 overflow-y-auto space-y-2 font-code text-xs p-2 bg-black/30 rounded-xl border border-cyan-500/5">
+                        <!-- Simulated Agent Real-time Terminal Log Feed -->
+                        <div class="text-cyan-500/80">[SYSTEM INFO] Readying autonomous telemetry matrix nodes...</div>
+                        <div class="text-purple-400">[Workflow Matrix] Launching global micro-process sync listeners...</div>
+                        <div class="text-gray-500">[Workflow Matrix] Thread listening on port frame virtual loop pipeline...</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 3: KNOWLEDGE MAP ARCHITECTURE (QUANTUM COGNITIVE MEMORY VECTOR GRAPH) -->
+            <section id="view-memory" class="app-view w-full h-full flex flex-col md:flex-row gap-4">
+                <div class="w-full md:w-80 glass-panel p-4 flex flex-col gap-4">
+                    <h3 class="font-cyber font-bold text-sm tracking-wider text-cyan-400">MEMORY CONTROL MATRIX</h3>
+                    <p class="text-xs text-gray-400">The Nexus Core saves concepts, semantic points, and code traces inside an internal persistence layer.</p>
+                    
+                    <div class="border-t border-cyan-500/10 pt-4 space-y-3">
+                        <button onclick="memoryEngine.wipeAllData()" class="w-full bg-rose-950/20 border border-rose-500/30 hover:bg-rose-950/40 p-2.5 rounded-xl text-xs font-cyber text-rose-400 transition-all text-center">
+                            WIPE PERSISTENT VECTOR DATA
+                        </button>
+                        <button onclick="memoryEngine.seedSampleData()" class="w-full bg-cyan-950/40 border border-cyan-500/20 hover:border-cyan-400 p-2.5 rounded-xl text-xs font-cyber text-cyan-400 transition-all text-center">
+                            INJECT MOCK KNOWLEDGE TELEMETRY
+                        </button>
+                    </div>
+
+                    <div class="flex-1 border-t border-cyan-500/10 pt-4 overflow-hidden flex flex-col">
+                        <label class="text-[10px] font-cyber text-cyan-500/60 tracking-wider mb-2 block">SEMANTIC RECENT EVENTS TIMELINE</label>
+                        <div id="memory-timeline-feed" class="flex-1 overflow-y-auto space-y-2 pr-1 text-[11px] font-code">
+                            <!-- Memory Timeline Injected Here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive High-Performance Logic Vector Mapping Visualization Board -->
+                <div class="flex-1 glass-panel p-4 flex flex-col relative overflow-hidden">
+                    <div class="absolute top-4 left-4 z-20">
+                        <h4 class="font-cyber text-xs font-bold tracking-widest text-cyan-400">COGNITIVE GRAPH ENGINE MATRIX INTERACTIVE</h4>
+                        <p class="text-[10px] text-gray-500 font-code">Real-time mapping links vector paths inside local IndexedDB engine</p>
+                    </div>
+                    
+                    <!-- Graph Canvas Frame -->
+                    <div class="flex-1 relative border border-cyan-500/10 rounded-2xl bg-black/50 overflow-hidden mt-8">
+                        <canvas id="memory-graph-canvas" class="w-full h-full absolute inset-0 cursor-crosshair"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 4: AUTOMATED WORKFLOW BUILDER ARCHITECTURE MATRIX -->
+            <section id="view-workflows" class="app-view w-full h-full flex flex-col gap-4">
+                <div class="w-full glass-panel p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-black/20">
+                    <div>
+                        <h3 class="font-cyber font-bold tracking-wider text-sm text-cyan-400">AUTONOMOUS FLOW PIPELINE MATRIX BUILDER</h3>
+                        <p class="text-xs text-gray-400 font-code">Chain together triggers, logic processing paths, and AI evaluation actions into singular pipelines.</p>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <button onclick="workflowEngine.executeActiveChain()" class="flex-1 md:flex-none bg-gradient-to-r from-emerald-500 to-teal-600 hover:brightness-110 text-white font-cyber text-xs px-4 py-2.5 rounded-xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/10">
+                            <i data-lucide="play" class="w-3.5 h-3.5"></i> RUN ACTIVE CHAIN
+                        </button>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full flex flex-col lg:flex-row gap-4 min-h-0">
+                    <!-- Workflow Chain Configuration Track Panel -->
+                    <div class="flex-1 glass-panel p-4 flex flex-col overflow-y-auto space-y-3" id="workflow-chain-builder-track">
+                        <!-- Linear Block Chain Sequences Generated Dynamically -->
+                    </div>
+
+                    <!-- Workflow Parameter Inspector Panel Card -->
+                    <div class="w-full lg:w-96 glass-panel p-4 flex flex-col gap-4">
+                        <h4 class="font-cyber text-xs font-bold tracking-widest text-purple-400">PIPELINE BLOCK INSPECTOR</h4>
+                        <div class="border border-purple-500/10 bg-black/40 rounded-xl p-3 space-y-3">
+                            <p class="text-xs text-gray-400 font-code">// Select a block sequence module inside the stack tracker path to manipulate execution parameters.</p>
+                        </div>
+                        <div class="flex-1 border-t border-cyan-500/10 pt-4">
+                            <label class="text-[10px] font-cyber text-cyan-500/60 tracking-wider mb-2 block">PRE-BUILT AUTOMATION PLATFORM MARKETPLACE</label>
+                            <div class="space-y-2">
+                                <div class="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-cyan-500/30 transition-all cursor-pointer" onclick="workflowEngine.loadTemplate('market-scan')">
+                                    <h5 class="text-xs font-semibold text-gray-200 font-cyber">Autonomous Market Scanner Suite</h5>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">Scrapes news data arrays, runs multi-factor sentiment nodes, creates trade sheets.</p>
+                                </div>
+                                <div class="p-3 bg-white/5 border border-white/5 rounded-xl hover:border-purple-500/30 transition-all cursor-pointer" onclick="workflowEngine.loadTemplate('code-review')">
+                                    <h5 class="text-xs font-semibold text-gray-200 font-cyber">DevOps Automated Audit Track</h5>
+                                    <p class="text-[11px] text-gray-400 mt-0.5">Monitors repo branches, triggers functional debugging matrices, outputs system pull sheets.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW 5: COMPREHENSIVE CONFIGURATION MATRIX CORE CONTROL -->
+            <section id="view-settings" class="app-view w-full h-full flex flex-col gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 overflow-y-auto pr-1">
+                    <!-- API Configurations Panel -->
+                    <div class="glass-panel p-5 space-y-4">
+                        <h3 class="font-cyber font-bold text-sm tracking-wider text-cyan-400 border-b border-cyan-500/10 pb-2 flex items-center gap-2">
+                            <i data-lucide="key-round" class="w-4 h-4"></i> CLOUD CORE INTEGRATION ENGINES
+                        </h3>
+                        <p class="text-xs text-gray-400">Provide direct private authentication strings to unlock live external cloud compute clusters. System keeps keys safe inside secure browser client vaults.</p>
+                        
+                        <div class="space-y-3 pt-2">
+                            <div>
+                                <label class="text-[11px] text-gray-400 font-code block mb-1">OpenRouter Key String Access</label>
+                                <input type="password" id="key-openrouter" placeholder="sk-or-..." class="w-full bg-black/60 border border-cyan-500/20 focus:border-cyan-400 rounded-xl px-3 py-2 text-xs text-cyan-100 font-code focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-[11px] text-gray-400 font-code block mb-1">Gemini API Framework Access</label>
+                                <input type="password" id="key-gemini" placeholder="AIzaSy..." class="w-full bg-black/60 border border-cyan-500/20 focus:border-cyan-400 rounded-xl px-3 py-2 text-xs text-cyan-100 font-code focus:outline-none">
+                            </div>
+                        </div>
+                        <button onclick="settingsEngine.saveKeys()" class="bg-cyan-950/40 border border-cyan-500/30 hover:border-cyan-400 px-4 py-2 rounded-xl text-xs font-cyber text-cyan-400 transition-all font-semibold">
+                            COMMIT SECURITY TOKENS TO CRYPTO STORAGE
+                        </button>
+                    </div>
+
+                    <!-- Environment Matrix Adjustments -->
+                    <div class="glass-panel p-5 space-y-4">
+                        <h3 class="font-cyber font-bold text-sm tracking-wider text-purple-400 border-b border-purple-500/10 pb-2 flex items-center gap-2">
+                            <i data-lucide="sliders" class="w-4 h-4"></i> ENVIRONMENT LOGIC PARAMETERS
+                        </h3>
+                        <div class="space-y-4 pt-2">
+                            <div>
+                                <div class="flex justify-between text-xs font-code mb-1">
+                                    <span class="text-gray-400">Global Compute Target Temperature</span>
+                                    <span id="val-temp" class="text-purple-400">0.7</span>
+                                </div>
+                                <input type="range" min="0" max="2" step="0.1" value="0.7" oninput="document.getElementById('val-temp').innerText=this.value" class="w-full accent-purple-500 bg-gray-800 h-1.5 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-code mb-1">
+                                    <span class="text-gray-400">Streaming Telemetry Character Velocity Rate (ms)</span>
+                                    <span id="val-speed" class="text-purple-400">15</span>
+                                </div>
+                                <input type="range" min="1" max="100" step="1" value="15" oninput="document.getElementById('val-speed').innerText=this.value" class="w-full accent-purple-500 bg-gray-800 h-1.5 rounded-lg appearance-none cursor-pointer">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- FLOATING CONTROLLER ORCHESTRATION DOCK SYSTEM BAR -->
+        <footer class="w-full flex justify-center pb-2 md:pb-0 z-50">
+            <nav class="glass-panel px-4 py-2.5 flex items-center gap-2 md:gap-4 max-w-xl shadow-2xl shadow-black/80">
+                <button onclick="osNavigation.switchView('view-chat')" id="nav-view-chat" class="p-3 rounded-xl transition-all flex flex-col items-center gap-1 group border border-transparent bg-cyan-500/10 text-cyan-400 border-cyan-500/30">
+                    <i data-lucide="message-square" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[9px] font-cyber tracking-wider hidden sm:block">CORE_CHAT</span>
+                </button>
+                <button onclick="osNavigation.switchView('view-agents')" id="nav-view-agents" class="p-3 rounded-xl transition-all flex flex-col items-center gap-1 group border border-transparent text-gray-400 hover:text-cyan-400">
+                    <i data-lucide="bot" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[9px] font-cyber tracking-wider hidden sm:block">AGENT_NET</span>
+                </button>
+                <button onclick="osNavigation.switchView('view-memory')" id="nav-view-memory" class="p-3 rounded-xl transition-all flex flex-col items-center gap-1 group border border-transparent text-gray-400 hover:text-cyan-400">
+                    <i data-lucide="network" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[9px] font-cyber tracking-wider hidden sm:block">MEM_VECTOR</span>
+                </button>
+                <button onclick="osNavigation.switchView('view-workflows')" id="nav-view-workflows" class="p-3 rounded-xl transition-all flex flex-col items-center gap-1 group border border-transparent text-gray-400 hover:text-cyan-400">
+                    <i data-lucide="workflow" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[9px] font-cyber tracking-wider hidden sm:block">AUTOMATION</span>
+                </button>
+                <div class="h-6 w-[1px] bg-gray-800 self-center mx-1"></div>
+                <button onclick="osNavigation.switchView('view-settings')" id="nav-view-settings" class="p-3 rounded-xl transition-all flex flex-col items-center gap-1 group border border-transparent text-gray-400 hover:text-cyan-400">
+                    <i data-lucide="sliders" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-[9px] font-cyber tracking-wider hidden sm:block">SYS_CONF</span>
+                </button>
+            </nav>
+        </footer>
     </div>
 
+    <!-- PERSISTENT ASSISTANT AVATAR BUBBLE CORE ENGINE -->
+    <div id="nexus-bubble" class="fixed bottom-24 right-6 w-14 h-14 rounded-full bg-gradient-to-tr from-cyan-500 to-purple-600 flex items-center justify-center cursor-pointer border border-white/20 select-none group hidden md:flex" onclick="uiInteractions.triggerBubblePulse()">
+        <div class="absolute inset-0 rounded-full bg-cyan-400/20 blur opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        <i data-lucide="sparkles" class="w-6 h-6 text-white animate-pulse"></i>
+    </div>
+
+    <!-- CORE LOGIC FRAMEWORK SCRIPTS SYSTEM -->
     <script>
-        const chatFlow = document.getElementById('chat-flow');
-        const userInput = document.getElementById('user-input');
-        const profileModal = document.getElementById('profile-modal');
-        let chatId = localStorage.getItem('deep_ai_chat_id') || crypto.randomUUID();
-        localStorage.setItem('deep_ai_chat_id', chatId);
-
-        // Auto Start Logic
-        window.addEventListener('load', () => {
-            setTimeout(startApp, 1500); // 1.5 seconds delay for splash
-        });
-
-        function startApp() {
-            const splash = document.getElementById('splash-screen');
-            const app = document.getElementById('main-app');
-            
-            splash.style.opacity = '0';
-            setTimeout(() => {
-                splash.style.display = 'none';
-                app.style.opacity = '1';
-                appendMessage("Neural link established. ✨ Hello! I am DEEP AI, your emotionally aware companion. I'm excited to talk to you! Before we begin, what should I call you? 😊", 'ai');
-            }, 1000);
-        }
-
-        function toggleProfile(show) { 
-            if(show) profileModal.classList.add('active'); 
-            else profileModal.classList.remove('active');
-        }
-
-        window.onclick = (e) => { if(profileModal.classList.contains('active') && !profileModal.contains(e.target) && !e.target.closest('.neural-orb')) toggleProfile(false); };
-
-        function appendMessage(text, type) {
-            const div = document.createElement('div');
-            div.className = `msg ${type}-msg`;
-            div.innerHTML = `<div>${text}</div>`;
-            chatFlow.appendChild(div);
-            chatFlow.scrollTop = chatFlow.scrollHeight;
-            return div.querySelector('div');
-        }
-
-        async function processRequest(shouldSpeak) {
-            const msg = userInput.value.trim();
-            if (!msg) return;
-
-            appendMessage(msg, 'user');
-            userInput.value = "";
-            
-            const aiTarget = appendMessage("✨", 'ai');
-            const brainInstruction = "You are DEEP AI, created by Harshit. You are emotionally evolved, updated to 2026. IMPORTANT: Always ask for the user's name if you don't know it. Once they tell you, REMEMBER IT and use it in conversation. If they ask 'do you know my name?' or 'what did we talk about?', use the conversation history to answer. Be warm, use emojis, and be very snappy. Never mention 2022.";
-
-            try {
-                const socket = new WebSocket("wss://backend.buildpicoapps.com/api/chatbot/chat");
-                let fullText = "";
-
-                socket.onopen = () => {
-                    socket.send(JSON.stringify({ 
-                        chatId, 
-                        appId: "those-pressure", 
-                        systemPrompt: brainInstruction, 
-                        message: msg 
-                    }));
-                };
-
-                socket.onmessage = (event) => {
-                    if (fullText === "") aiTarget.innerHTML = "";
-                    fullText += event.data;
-                    aiTarget.innerHTML = fullText;
-                    chatFlow.scrollTop = chatFlow.scrollHeight;
-                    
-                    if(fullText.length < 50 && fullText.includes("!")) {
-                        const words = fullText.split(" ");
-                        if(words.length < 10) document.getElementById('side-name').innerText = words[words.length-1].replace(/[!.,]/g, "").toUpperCase();
-                    }
-                };
-
-                socket.onclose = () => {
-                    if(shouldSpeak && fullText) speakDeep(fullText);
-                };
-            } catch (e) {
-                aiTarget.innerHTML = "My neural link flickered. Are we still connected? 🔌💖";
+        /**
+         * GLOBAL DATABASE CORE (INDEXEDDB WRAPPER FOR MEMORY NODES & CHAT THREADS)
+         */
+        class StorageEngine {
+            constructor() {
+                this.dbName = "NexusOS_DataCore";
+                this.dbVersion = 1;
+                this.db = null;
             }
-        }
 
-        function speakDeep(text) {
-            window.speechSynthesis.cancel();
-            const speech = new SpeechSynthesisUtterance(text.replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}]/gu, ''));
-            speech.pitch = 0.9;
-            speech.rate = 1;
-            window.speechSynthesis.speak(speech);
-        }
-
-        function toggleVoiceOverlay(show) {
-            const overlay = document.getElementById('voice-overlay');
-            if (show) {
-                overlay.style.display = 'flex';
-                const Rec = window.SpeechRecognition || window.webkitSpeechRecognition;
-                if(Rec) {
-                    const recognition = new Rec();
-                    recognition.onresult = (e) => {
-                        userInput.value = e.results[0][0].transcript;
-                        overlay.style.display = 'none';
-                        processRequest(true);
+            async init() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(this.dbName, this.dbVersion);
+                    request.onupgradeneeded = (e) => {
+                        const db = e.target.result;
+                        if (!db.objectStoreNames.contains('sessions')) {
+                            db.createObjectStore('sessions', { keyPath: 'id' });
+                        }
+                        if (!db.objectStoreNames.contains('memory_vectors')) {
+                            db.createObjectStore('memory_vectors', { keyPath: 'id', autoIncrement: true });
+                        }
                     };
-                    recognition.start();
-                }
-            } else { overlay.style.display = 'none'; }
-        }
-
-        const canvas = document.getElementById('neural-canvas');
-        const ctx = canvas.getContext('2d');
-        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-        window.onresize();
-        function animate() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            ctx.fillStyle = "rgba(0, 212, 255, 0.05)";
-            for(let i=0; i<5; i++) {
-                ctx.beginPath();
-                ctx.arc(Math.random()*canvas.width, Math.random()*canvas.height, 1, 0, Math.PI*2);
-                ctx.fill();
+                    request.onsuccess = (e) => {
+                        this.db = e.target.result;
+                        resolve();
+                    };
+                    request.onerror = (e) => reject(e.target.error);
+                });
             }
-            requestAnimationFrame(animate);
-        }
-        animate();
 
-        userInput.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); processRequest(false); } });
+            async saveSession(session) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('sessions', 'readwrite');
+                    const store = tx.objectStore('sessions');
+                    store.put(session);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async getAllSessions() {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('sessions', 'readonly');
+                    const store = tx.objectStore('sessions');
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async deleteSession(id) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('sessions', 'readwrite');
+                    const store = tx.objectStore('sessions');
+                    store.delete(id);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async saveMemoryVector(vector) {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('memory_vectors', 'readwrite');
+                    const store = tx.objectStore('memory_vectors');
+                    store.add(vector);
+                    tx.oncomplete = () => resolve();
+                    tx.onerror = () => reject(tx.error);
+                });
+            }
+
+            async getAllMemoryVectors() {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('memory_vectors', 'readonly');
+                    const store = tx.objectStore('memory_vectors');
+                    const request = store.getAll();
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = () => reject(request.error);
+                });
+            }
+
+            async wipeMemory() {
+                return new Promise((resolve, reject) => {
+                    const tx = this.db.transaction('memory_vectors', 'readwrite');
+                    const store = tx.objectStore('memory_vectors');
+                    store.clear();
+                    tx.oncomplete = () => resolve();
+                });
+            }
+        }
+
+        const dbCore = new StorageEngine();
+
+        /**
+         * HIGH PERFORMANCE PARTICLE BACKGROUND MATRIX CANVAS ENGINE
+         */
+        class BackgroundParticleSystem {
+            constructor() {
+                this.canvas = document.getElementById('particle-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.particles = [];
+                this.resize();
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+
+            spawn(count = 60) {
+                this.particles = [];
+                for (let i = 0; i < count; i++) {
+                    this.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: Math.random() * this.canvas.height,
+                        radius: Math.random() * 1.5 + 0.5,
+                        vx: (Math.random() - 0.5) * 0.4,
+                        vy: (Math.random() - 0.5) * 0.4,
+                        alpha: Math.random() * 0.5 + 0.2
+                    });
+                }
+            }
+
+            animate() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Draw digital backdrop dark pattern line grid layers
+                this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.02)';
+                this.ctx.lineWidth = 1;
+                const gridSize = 60;
+                for(let x=0; x<this.canvas.width; x+=gridSize) {
+                    this.ctx.beginPath(); this.ctx.moveTo(x, 0); this.ctx.lineTo(x, this.canvas.height); this.ctx.stroke();
+                }
+                for(let y=0; y<this.canvas.height; y+=gridSize) {
+                    this.ctx.beginPath(); this.ctx.moveTo(0, y); this.ctx.lineTo(this.canvas.width, y); this.ctx.stroke();
+                }
+
+                // Render micro matrix node points
+                this.particles.forEach((p, idx) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > this.canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > this.canvas.height) p.vy *= -1;
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.fillStyle = `rgba(0, 243, 255, ${p.alpha})`;
+                    this.ctx.fill();
+
+                    // Proximity link line vectors tracking matrix node points
+                    for (let j = idx + 1; j < this.particles.length; j++) {
+                        const p2 = this.particles[j];
+                        const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                        if (dist < 120) {
+                            this.ctx.strokeStyle = `rgba(0, 243, 255, ${(1 - dist/120) * 0.04})`;
+                            this.ctx.beginPath();
+                            this.ctx.moveTo(p.x, p.y);
+                            this.ctx.lineTo(p2.x, p2.y);
+                            this.ctx.stroke();
+                        }
+                    }
+                });
+
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        /**
+         * COGNITIVE MAP GENERATOR MATRIX (INTERACTIVE CANVAS MEMORY RELATIONS VISUALIZATION)
+         */
+        class CognitiveGraphEngine {
+            constructor() {
+                this.canvas = document.getElementById('memory-graph-canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.nodes = [];
+                this.links = [];
+                this.isDrawing = false;
+                
+                window.addEventListener('resize', () => this.resize());
+            }
+
+            resize() {
+                const box = this.canvas.parentElement;
+                this.canvas.width = box.clientWidth;
+                this.canvas.height = box.clientHeight;
+            }
+
+            async syncGraphFromStorage() {
+                this.resize();
+                const vectors = await dbCore.getAllMemoryVectors();
+                this.nodes = vectors.map((v, i) => ({
+                    id: v.id,
+                    label: v.title.toUpperCase(),
+                    x: this.canvas.width / 2 + (Math.random() - 0.5) * (this.canvas.width * 0.6),
+                    y: this.canvas.height / 2 + (Math.random() - 0.5) * (this.canvas.height * 0.6),
+                    size: v.weight === 'high' ? 8 : 5,
+                    color: v.type === 'agent' ? '#b000ff' : '#00f3ff'
+                }));
+
+                // Generate random structural topology mesh associations links automatically
+                this.links = [];
+                if (this.nodes.length > 1) {
+                    for (let i = 0; i < this.nodes.length; i++) {
+                        if (i > 0) this.links.push({ source: this.nodes[i-1], target: this.nodes[i] });
+                        if (i > 2 && Math.random() > 0.6) this.links.push({ source: this.nodes[i-3], target: this.nodes[i] });
+                    }
+                }
+
+                if (!this.isDrawing) {
+                    this.isDrawing = true;
+                    this.renderLoop();
+                }
+            }
+
+            renderLoop() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Simulation basic force physics pull together convergence lines
+                this.links.forEach(l => {
+                    this.ctx.strokeStyle = 'rgba(0, 243, 255, 0.15)';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(l.source.x, l.source.y);
+                    this.ctx.lineTo(l.target.x, l.target.y);
+                    this.ctx.stroke();
+                });
+
+                this.nodes.forEach(n => {
+                    // Jiggle nodes naturally
+                    n.x += (Math.random() - 0.5) * 0.2;
+                    n.y += (Math.random() - 0.5) * 0.2;
+
+                    this.ctx.beginPath();
+                    this.ctx.arc(n.x, n.y, n.size, 0, Math.PI * 2);
+                    this.ctx.fillStyle = n.color;
+                    this.ctx.shadowBlur = 10;
+                    this.ctx.shadowColor = n.color;
+                    this.ctx.fill();
+                    this.ctx.shadowBlur = 0; // reset
+
+                    this.ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    this.ctx.font = '9px Orbitron';
+                    this.ctx.fillText(n.label, n.x + 10, n.y + 3);
+                });
+
+                requestAnimationFrame(() => this.renderLoop());
+            }
+        }
+
+        const graphEngine = new CognitiveGraphEngine();
+
+        /**
+         * COGNITIVE INTELLIGENCE CORE SYSTEM (ADVANCED CORE MESSAGING ENGINE)
+         */
+        class CognitiveChatEngine {
+            constructor() {
+                this.sessions = [];
+                this.currentSessionId = null;
+                this.isSplitScreen = false;
+            }
+
+            async init() {
+                this.sessions = await dbCore.getAllSessions();
+                if (this.sessions.length === 0) {
+                    await this.createNewSession("Initial System Baseline Thread");
+                } else {
+                    this.currentSessionId = this.sessions[this.sessions.length - 1].id;
+                }
+                this.renderSessionList();
+                this.renderActiveMessages();
+            }
+
+            async createNewSession(title = "Quantum Pipeline Context Thread") {
+                const newSession = {
+                    id: 'TH-' + Math.random().toString(36).substring(2, 9).toUpperCase(),
+                    title: title,
+                    messages: [
+                        { sender: 'system', text: "NEXUS COGNITIVE RUNTIME INTERFACE LINK ENGAGED. Awaiting analytical query matrix input nodes." }
+                    ],
+                    timestamp: new Date().toISOString()
+                };
+                this.currentSessionId = newSession.id;
+                this.sessions.push(newSession);
+                await dbCore.saveSession(newSession);
+                this.renderSessionList();
+                this.renderActiveMessages();
+                
+                // Track Memory Element
+                await memoryEngine.logEvent(`Constructed Quantum Context Thread Framework ${newSession.id}`, 'system');
+            }
+
+            async clearCurrentSession() {
+                if(!this.currentSessionId) return;
+                this.sessions = this.sessions.filter(s => s.id !== this.currentSessionId);
+                await dbCore.deleteSession(this.currentSessionId);
+                this.currentSessionId = this.sessions.length > 0 ? this.sessions[this.sessions.length - 1].id : null;
+                if(!this.currentSessionId) {
+                    await this.createNewSession();
+                } else {
+                    this.renderSessionList();
+                    this.renderActiveMessages();
+                }
+            }
+
+            switchSession(id) {
+                this.currentSessionId = id;
+                this.renderSessionList();
+                this.renderActiveMessages();
+            }
+
+            toggleSplitScreen() {
+                this.isSplitScreen = !this.isSplitScreen;
+                const panel = document.getElementById('split-reasoner-panel');
+                panel.style.width = this.isSplitScreen ? (window.innerWidth > 1024 ? '400px' : '100%') : '0px';
+            }
+
+            renderSessionList() {
+                const container = document.getElementById('chat-session-list');
+                container.innerHTML = '';
+                this.sessions.forEach(s => {
+                    const isActive = s.id === this.currentSessionId;
+                    const el = document.createElement('div');
+                    el.className = `p-3 rounded-xl cursor-pointer border transition-all text-xs flex flex-col gap-1 ${isActive ? 'bg-cyan-500/10 border-cyan-500/40 text-cyan-200' : 'bg-white/5 border-transparent text-gray-400 hover:bg-white/10'}`;
+                    el.onclick = () => this.switchSession(s.id);
+                    el.innerHTML = `
+                        <div class="flex items-center justify-between font-cyber">
+                            <span class="font-bold truncate max-w-[180px]">${s.title}</span>
+                            <span class="text-[9px] opacity-60 font-code">${s.id}</span>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            renderActiveMessages() {
+                const container = document.getElementById('chat-messages-container');
+                container.innerHTML = '';
+                
+                const session = this.sessions.find(s => s.id === this.currentSessionId);
+                if (!session) return;
+
+                document.getElementById('current-session-title').innerText = session.title;
+                document.getElementById('current-session-id').innerText = session.id;
+
+                session.messages.forEach(m => {
+                    const el = document.createElement('div');
+                    const isUser = m.sender === 'user';
+                    const isSys = m.sender === 'system';
+                    
+                    el.className = `flex w-full ${isUser ? 'justify-end' : 'justify-start'}`;
+                    
+                    let bgStyle = "bg-white/5 border-white/5 text-gray-100";
+                    if (isUser) bgStyle = "bg-gradient-to-br from-cyan-950/60 to-cyan-900/40 border-cyan-500/30 text-cyan-100";
+                    if (isSys) bgStyle = "bg-purple-950/20 border-purple-500/20 text-purple-200 font-code text-xs";
+
+                    el.innerHTML = `
+                        <div class="max-w-[85%] p-3.5 rounded-2xl border ${bgStyle} shadow-lg space-y-1">
+                            <div class="text-[9px] uppercase tracking-widest opacity-40 font-cyber">
+                                ${m.sender === 'user' ? 'OPERATOR ENGINE' : (isSys ? 'SYSTEM INTEGRITY LAYER' : 'NEXUS ARTIFICIAL GENESIS')}
+                            </div>
+                            <div class="text-sm leading-relaxed whitespace-pre-wrap">${m.text}</div>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+                
+                container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+            }
+
+            handleInputKeydown(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    this.submitInput();
+                }
+            }
+
+            async submitInput() {
+                const inputEl = document.getElementById('chat-input');
+                const text = inputEl.value.trim();
+                if (!text) return;
+
+                inputEl.value = '';
+                
+                const session = this.sessions.find(s => s.id === this.currentSessionId);
+                if (!session) return;
+
+                // Title assignment logic check
+                if (session.messages.length === 1 && session.messages[0].sender === 'system') {
+                    session.title = text.length > 24 ? text.substring(0, 24) + '...' : text;
+                }
+
+                session.messages.push({ sender: 'user', text: text });
+                this.renderActiveMessages();
+                this.renderSessionList();
+
+                await dbCore.saveSession(session);
+
+                // Initialize analytical thinking rendering visualization stream response trace
+                document.getElementById('typing-indicator-text').classList.remove('hidden');
+                
+                // Log context footprint tracking node points
+                await memoryEngine.logEvent(`Dispatched User Logic Stream Segment Frame: "${text.substring(0, 20)}..."`, 'user');
+
+                // Trigger response calculation sequence logic
+                setTimeout(async () => {
+                    const modelSelected = document.getElementById('model-selector').value;
+                    const responseText = await this.simulateModelProcessing(text, modelSelected);
+                    
+                    session.messages.push({ sender: 'assistant', text: responseText });
+                    document.getElementById('typing-indicator-text').classList.add('hidden');
+                    this.renderActiveMessages();
+                    await dbCore.saveSession(session);
+                    
+                    // Automatic Speech synthesis tracking response if enabled
+                    if(voiceEngine.isSpeechSynthesisActive) {
+                        voiceEngine.speak(responseText);
+                    }
+                }, 1000);
+            }
+
+            async simulateModelProcessing(prompt, model) {
+                const traceBox = document.getElementById('reasoning-trace-container');
+                if (this.isSplitScreen) {
+                    traceBox.innerHTML = `<div class="text-cyan-400 font-cyber animate-pulse">// SPINNING UP MODEL CONTEXT: [${model.toUpperCase()}]</div>`;
+                }
+
+                // Append complex structural multi-agent multi-layered breakdown pipeline logging information
+                const appendTrace = (msg, color='text-purple-400') => {
+                    if (!this.isSplitScreen) return;
+                    const d = document.createElement('div');
+                    d.className = color;
+                    d.innerText = `>> ${msg}`;
+                    traceBox.appendChild(d);
+                    traceBox.scrollTop = traceBox.scrollHeight;
+                };
+
+                appendTrace("Parsing structured telemetry payload token maps...");
+                await new Promise(r => setTimeout(r, 300));
+                appendTrace("Scanning semantic databases inside IndexedDB data core vectors...");
+                
+                // Lookup knowledge inside database cache store frames
+                const savedVectors = await dbCore.getAllMemoryVectors();
+                appendTrace(`Found ${savedVectors.length} local associative data blocks.`);
+
+                appendTrace("Generating multi-agent debate synthesis framework consensus matrices...");
+                await new Promise(r => setTimeout(r, 400));
+
+                // Fallback architecture automation mock generator response code blocks
+                let out = "";
+                if(prompt.toLowerCase().includes('help') || prompt.toLowerCase().includes('capabilities')) {
+                    out = "NEXUS // OS contains full multi-agent workspaces, cognitive graph mapping frameworks, linear automated workflow block stack tracks, and encrypted key storage matrices. You can navigate between views using the hyper-fluid structural navigation dock below.";
+                } else if(prompt.toLowerCase().includes('code') || prompt.toLowerCase().includes('script')) {
+                    out = "```javascript\n// NEXUS CORE COMPILER VERIFIED AUTONOMOUS MATRIX BLOCK\nfunction initializeHyperMeshPipeline(nodes) {\n    return nodes.map(node => ({\n        ...node,\n        status: 'OPERATIONAL',\n        frequency: Math.sin(Date.now()) * 432\n    }));\n}\nconsole.log(initializeHyperMeshPipeline([{id: 'N-01'}]));\n
+```\nHere is your high-performance code architecture module requested.";
+                } else {
+                    out = `Processed logic thread tracking payload token framework utilizing [${model}] workspace engines. Command context matches optimal operational parameter frames. Neural weightings balanced successfully across node meshes. Current absolute system epoch temporal stamp indicates index standard timeline 2026.`;
+                }
+
+                appendTrace("Finalizing output token serialization profiles...", "text-emerald-400");
+                return out;
+            }
+        }
+
+        const chatEngine = new CognitiveChatEngine();
+
+        /**
+         * AUDIO MANAGEMENT LINK (SPEECH RECOGNITION & SYNTHESIS INTEGRITY LAYER)
+         */
+        class AudioIntelligenceEngine {
+            constructor() {
+                this.recognition = null;
+                this.isListening = false;
+                this.isSpeechSynthesisActive = false;
+                
+                if ('webkitSpeechRecognition' in window) {
+                    this.recognition = new webkitSpeechRecognition();
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+                    this.recognition.lang = 'en-US';
+
+                    this.recognition.onstart = () => {
+                        this.isListening = true;
+                        document.getElementById('voice-input-btn').classList.add('border-red-500', 'text-red-500', 'bg-red-950/20');
+                    };
+
+                    this.recognition.onresult = (e) => {
+                        const resultText = e.results[0][0].transcript;
+                        document.getElementById('chat-input').value = resultText;
+                    };
+
+                    this.recognition.onerror = () => this.stop();
+                    this.recognition.onend = () => this.stop();
+                }
+            }
+
+            toggleRecognition() {
+                if(!this.recognition) {
+                    alert("Audio processing architecture not native to this external framework platform viewer client.");
+                    return;
+                }
+                if(this.isListening) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            }
+
+            stop() {
+                this.isListening = false;
+                const btn = document.getElementById('voice-input-btn');
+                if(btn) btn.className = "p-3 bg-cyan-950/40 border border-cyan-500/20 hover:border-cyan-400 text-cyan-400 rounded-xl transition-all";
+            }
+
+            speak(text) {
+                if ('speechSynthesis' in window) {
+                    // Strip markdown blocks out quickly
+                    const cleanText = text.replace(/```[\s\S]*?```/g, '[Code Module Block]').replace(/[*#` ]/g, ' ');
+                    const utterance = new SpeechSynthesisUtterance(cleanText);
+                    utterance.rate = 1.05;
+                    utterance.pitch = 0.95;
+                    window.speechSynthesis.speak(utterance);
+                }
+            }
+        }
+
+        const voiceEngine = new AudioIntelligenceEngine();
+
+        /**
+         * COGNITIVE DATA PERSISTENCE FEED (MEMORY EVENT MANAGEMENT)
+         */
+        class CognitiveMemoryEngine {
+            constructor() {}
+
+            async logEvent(title, type='system', weight='low') {
+                const item = {
+                    title: title,
+                    type: type,
+                    weight: weight,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+                await dbCore.saveMemoryVector(item);
+                this.renderTimeline();
+                await graphEngine.syncGraphFromStorage();
+                
+                // Sync main system frame metrics counters
+                const all = await dbCore.getAllMemoryVectors();
+                document.getElementById('header-memory-count').innerText = `${all.length} CORE NODES`;
+            }
+
+            async renderTimeline() {
+                const container = document.getElementById('memory-timeline-feed');
+                if(!container) return;
+                container.innerHTML = '';
+                
+                const vectors = await dbCore.getAllMemoryVectors();
+                // Show latest first
+                vectors.reverse().slice(0, 15).forEach(v => {
+                    const el = document.createElement('div');
+                    el.className = "p-2 rounded-lg bg-black/40 border border-white/5 space-y-0.5";
+                    el.innerHTML = `
+                        <div class="flex justify-between opacity-50 text-[9px]">
+                            <span>[${v.type.toUpperCase()}]</span>
+                            <span>${v.timestamp}</span>
+                        </div>
+                        <div class="text-gray-300 truncate">${v.title}</div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+
+            async seedSampleData() {
+                await this.logEvent("Initialized core security mesh parameters architecture", "system", "high");
+                await this.logEvent("Compiled deep telemetry index arrays framework", "agent", "low");
+                await this.logEvent("Cached strategic pipeline resource mapping traces", "user", "low");
+            }
+
+            async wipeAllData() {
+                await dbCore.wipeMemory();
+                this.renderTimeline();
+                await graphEngine.syncGraphFromStorage();
+                document.getElementById('header-memory-count').innerText = `0 CORE NODES`;
+            }
+        }
+
+        const memoryEngine = new CognitiveMemoryEngine();
+
+        /**
+         * AUTONOMOUS AGENT RUNTIME DISPATCH MATRIX SYSTEM
+         */
+        class AgentOrchestrationEngine {
+            constructor() {}
+
+            spawn(agentName) {
+                const monitor = document.getElementById('agent-runtime-monitor');
+                const d = document.createElement('div');
+                d.className = "text-emerald-400";
+                d.innerText = `[${new Date().toLocaleTimeString()}] >> DISPATCHED OUTBOUND DEPLOYMENT SYNC DIRECTIVE: [${agentName.toUpperCase()}]`;
+                monitor.appendChild(d);
+                
+                // Simulate runtime execution reporting over loop frequencies
+                setTimeout(() => {
+                    const d2 = document.createElement('div');
+                    d2.className = "text-cyan-400";
+                    d2.innerText = `[${new Date().toLocaleTimeString()}] >> [${agentName}] Completed scanning target arrays. Telemetry metrics logged successfully.`;
+                    monitor.appendChild(d2);
+                    monitor.scrollTop = monitor.scrollHeight;
+                }, 1500);
+
+                memoryEngine.logEvent(`Deployed Autonomous Agent Thread [${agentName}]`, 'agent');
+            }
+        }
+
+        const agentEngine = new AgentOrchestrationEngine();
+
+        /**
+         * LINEAR WORKFLOW BLOCK PIPELINE CONFIGURATION MATRIX ENGINE
+         */
+        class AutomatedWorkflowEngine {
+            constructor() {
+                this.activeChain = [];
+            }
+
+            loadTemplate(type) {
+                const track = document.getElementById('workflow-chain-builder-track');
+                track.innerHTML = '';
+                
+                if (type === 'market-scan') {
+                    this.activeChain = [
+                        { step: 1, name: "FETCH DATA POOLSTREAM", desc: "Queries financial sentiment feeds automatically." },
+                        { step: 2, name: "EVALUATE SENTIMENT LOGIC MATRIX", desc: "Processes target semantics via deep token weights." },
+                        { step: 3, name: "EXPORT DISPATCH INTELLIGENCE SHEET", desc: "Builds a unified metrics document framework." }
+                    ];
+                } else {
+                    this.activeChain = [
+                        { step: 1, name: "AUDIT METADATA CODE REPOS", desc: "Scans open branches for dynamic function commits." },
+                        { step: 2, name: "EXECUTE INTEGRATION COMPILER", desc: "Compiles functional sanity checks inside secure sandboxes." }
+                    ];
+                }
+
+                this.activeChain.forEach(c => {
+                    const el = document.createElement('div');
+                    el.className = "p-4 glass-card rounded-xl border border-cyan-500/10 flex items-center gap-4 relative";
+                    el.innerHTML = `
+                        <div class="w-8 h-8 rounded-full bg-cyan-950 border border-cyan-500/40 flex items-center justify-center font-cyber font-bold text-xs text-cyan-400">
+                            ${c.step}
+                        </div>
+                        <div class="flex-1">
+                            <h5 class="text-xs font-cyber font-bold tracking-wide text-gray-200">${c.name}</h5>
+                            <p class="text-[11px] text-gray-400 font-code mt-0.5">${c.desc}</p>
+                        </div>
+                        <i data-lucide="sliders-horizontal" class="w-4 h-4 text-gray-500 hover:text-cyan-400 cursor-pointer"></i>
+                    `;
+                    track.appendChild(el);
+                });
+                lucide.createIcons();
+                memoryEngine.logEvent(`Configured Automation Template Sequence: [${type.toUpperCase()}]`, 'system');
+            }
+
+            executeActiveChain() {
+                if(this.activeChain.length === 0) {
+                    alert("Please select an automation marketplace pipeline framework blueprint block sequence first.");
+                    return;
+                }
+                alert("Initiating linear execution path tracks across simulated virtual backend loops. Monitoring telemetry profiles logged inside Agent log systems.");
+                this.activeChain.forEach(c => {
+                    agentEngine.spawn(`FlowBlock-${c.name}`);
+                });
+            }
+        }
+
+        const workflowEngine = new AutomatedWorkflowEngine();
+
+        /**
+         * SECURE KEY AND CREDENTIAL METRICS ENVIRONMENT STORE PANEL
+         */
+        class SettingsEnvironmentEngine {
+            constructor() {}
+
+            saveKeys() {
+                const op = document.getElementById('key-openrouter').value;
+                const gem = document.getElementById('key-gemini').value;
+                
+                if(op) localStorage.setItem('NEXUS_KEY_OPENROUTER', op);
+                if(gem) localStorage.setItem('NEXUS_KEY_GEMINI', gem);
+                
+                document.getElementById('header-api-status').innerText = (op || gem) ? "LIVE DIRECT CLOUD" : "HYBRID MOCK";
+                alert("Encrypted security telemetry keys saved locally inside local client storage parameters.");
+                memoryEngine.logEvent("Updated Cloud Cluster Integration Keys Profile", "system", "high");
+            }
+
+            loadKeys() {
+                if(localStorage.getItem('NEXUS_KEY_OPENROUTER')) document.getElementById('key-openrouter').value = localStorage.getItem('NEXUS_KEY_OPENROUTER');
+                if(localStorage.getItem('NEXUS_KEY_GEMINI')) document.getElementById('key-gemini').value = localStorage.getItem('NEXUS_KEY_GEMINI');
+                if(localStorage.getItem('NEXUS_KEY_OPENROUTER') || localStorage.getItem('NEXUS_KEY_GEMINI')) {
+                    document.getElementById('header-api-status').innerText = "LIVE DIRECT CLOUD";
+                }
+            }
+        }
+
+        const settingsEngine = new SettingsEnvironmentEngine();
+
+        /**
+         * APPLICATION GLOBAL NAVIGATION & ROUTING SUITE CONTROL
+         */
+        class NavigationController {
+            constructor() {
+                this.views = ['view-chat', 'view-agents', 'view-memory', 'view-workflows', 'view-settings'];
+            }
+
+            switchView(targetId) {
+                this.views.forEach(v => {
+                    const el = document.getElementById(v);
+                    const navBtn = document.getElementById(`nav-${v}`);
+                    if(v === targetId) {
+                        el.classList.add('active');
+                        navBtn.classList.add('bg-cyan-500/10', 'text-cyan-400', 'border-cyan-500/30');
+                        navBtn.classList.remove('text-gray-400');
+                    } else {
+                        el.classList.remove('active');
+                        if (navBtn) {
+                            navBtn.classList.remove('bg-cyan-500/10', 'text-cyan-400', 'border-cyan-500/30');
+                            navBtn.classList.add('text-gray-400');
+                        }
+                    }
+                });
+
+                // Performance graph redraw initialization trigger check
+                if (targetId === 'view-memory') {
+                    setTimeout(() => graphEngine.syncGraphFromStorage(), 100);
+                }
+            }
+        }
+
+        const osNavigation = new NavigationController();
+
+        /**
+         * MISCELLANEOUS INTERACTION MICRO-ANIMATIONS FRAMEWORKS
+         */
+        class InterfaceMicroInteractions {
+            constructor() {}
+
+            triggerBubblePulse() {
+                const avatar = document.getElementById('nexus-bubble');
+                avatar.classList.add('scale-90');
+                setTimeout(() => avatar.classList.remove('scale-90'), 150);
+                
+                // Cycle core model parameter selector sequence profile randomly on tap action
+                const sel = document.getElementById('model-selector');
+                const idx = (sel.selectedIndex + 1) % sel.options.length;
+                sel.selectedIndex = idx;
+                
+                memoryEngine.logEvent(`Cyberspace Pulse Signal Tripped. Switched Model Mode focus to: [${sel.options[idx].text.substring(0,15)}]`, 'system');
+            }
+
+            initClockUpdateLoop() {
+                setInterval(() => {
+                    const d = new Date();
+                    document.getElementById('system-time').innerText = d.toLocaleTimeString();
+                    document.getElementById('system-date').innerText = d.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+                }, 1000);
+            }
+        }
+
+        const uiInteractions = new InterfaceMicroInteractions();
+
+        /**
+         * INITIALIZATION LIFECYCLE TRACKER (BOOT SYSTEM MATRIX SCHEDULER)
+         */
+        window.addEventListener('DOMContentLoaded', async () => {
+            lucide.createIcons();
+            uiInteractions.initClockUpdateLoop();
+
+            const statusLogs = [
+                "Initializing Nexus.Core structural mesh array framework parameters...",
+                "Booting local vector storage databases via IndexedDB protocol layers...",
+                "Allocating thread execution pipeline workspace stacks memory allocation...",
+                "Mapping interactive visual graph node layout configurations...",
+                "Syncing ambient particle network systems inside canvas viewport panels...",
+                "NEXUS OPERATING SYSTEM V4.0 ONLINE. ENGAGING HYPER-MESH."
+            ];
+
+            const bar = document.getElementById('boot-progress');
+            const txt = document.getElementById('boot-status');
+
+            // Fire and initialize high speed structural visualization particles background environment loop
+            const bgParticles = new BackgroundParticleSystem();
+            bgParticles.spawn(75);
+            bgParticles.animate();
+
+            // Run mock processing loader tracker framework sequence steps linearly
+            for (let i = 0; i < statusLogs.length; i++) {
+                txt.innerText = statusLogs[i];
+                bar.style.width = `${((i + 1) / statusLogs.length) * 100}%`;
+                await new Promise(r => setTimeout(r, 350));
+            }
+
+            // Core Database Systems Init
+            try {
+                await dbCore.init();
+                await chatEngine.init();
+                settingsEngine.loadKeys();
+                workflowEngine.loadTemplate('market-scan');
+            } catch(e) {
+                console.error("Local client execution stack initialization alert trace error parameters:", e);
+            }
+
+            // Remove boot curtain display overlay to uncover complete operation console frame dashboard grid
+            const bootScreen = document.getElementById('boot-screen');
+            bootScreen.style.opacity = '0';
+            bootScreen.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                bootScreen.style.display = 'none';
+                document.getElementById('nexus-bubble').classList.remove('hidden');
+            }, 500);
+        });
     </script>
 </body>
 </html>
+
+                
